@@ -12,11 +12,12 @@ app.use(express.urlencoded({
 }));
 
 //Routes
-
+// get request for initial site load
 app.get("/", (req, res) => {
   res.sendFile(__dirname + "/signup.html");
 });
 
+// post request for submiting applicants name and email to mailchimp list
 app.post("/", (req, res) => {
   const firstName = req.body.firstName;
   const lastName = req.body.lastName;
@@ -33,12 +34,14 @@ app.post("/", (req, res) => {
     }]
   }
   var jsonData = JSON.stringify(data);
+  // The list id is your audience ID from Mailchimp
   const url = "https://us7.api.mailchimp.com/3.0/lists/listID";
   const options = {
     method: "POST",
     // Auth should be randomName of your choide then a : then the apiKey
     auth: "dane1:apiKey"
   }
+  // function for redirecting different page based of a successful submit or not
   const request = https.request(url, options, function(response) {
     if (response.statusCode === 200) {
       res.sendFile(__dirname + "/success.html");
@@ -55,6 +58,7 @@ app.post("/", (req, res) => {
 
 });
 
+// Button function to redirect back to the root
 app.get("/failure", function(req, res){
   res.redirect("/");
 });
@@ -63,6 +67,7 @@ app.get("/success", function(req, res){
   res.redirect("/");
 });
 
+// local host listening port 3000
 app.listen(3000, function() {
   console.log("server is runniung on port 3000")
 });
